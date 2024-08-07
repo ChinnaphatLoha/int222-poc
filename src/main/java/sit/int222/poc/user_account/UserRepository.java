@@ -1,4 +1,6 @@
 package sit.int222.poc.user_account;
 
-public interface UserRepository extends org.springframework.data.jpa.repository.JpaRepository<sit.int222.poc.user_account.User, java.lang.Integer> {
-  }
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
+}
