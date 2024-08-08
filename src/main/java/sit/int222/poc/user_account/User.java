@@ -1,5 +1,6 @@
 package sit.int222.poc.user_account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,6 +27,7 @@ public class User {
     @Column(name = "email", nullable = false, length = 45)
     private String email;
 
+    @JsonIgnore
     @Size(max = 16)
     @NotNull
     @Column(name = "password", nullable = false, length = 16)
