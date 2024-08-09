@@ -28,9 +28,9 @@ public class User {
     private String email;
 
     @JsonIgnore
-    @Size(max = 16)
+    @Size(max = 100)
     @NotNull
-    @Column(name = "password", nullable = false, length = 16)
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
 }
