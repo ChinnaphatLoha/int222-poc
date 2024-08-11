@@ -4,7 +4,7 @@ import lombok.Data;
 import sit.int222.poc.user_account.User;
 
 @Data
-public class PrivateBoardResponse {
+public class SimpleBoardResponse {
     private Long id;
     private String title;
     private String description;
