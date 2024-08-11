@@ -1,6 +1,13 @@
-# Spring REST API - Multi-DBMS Configuration PoC
+# Spring REST API - Integrated Project PoC (INT222, SIT KMUTT 2024/1)
 
-This repository demonstrates a Proof of Concept (PoC) for connecting and configuring multiple Database Management Systems (DBMS) in a Spring Boot application. It also illustrates the use of a proper folder structure to support this configuration.
+This repository serves as a Proof of Concept (PoC) for the Integrated Project in the INT222 course at SIT KMUTT (2024/1). The PoC demonstrates the use of multiple Database Management Systems (DBMS) in a Spring Boot application, alongside implementing authentication and authorization with Spring Security.
+
+## Purpose
+
+The primary objectives of this PoC are:
+- **Multi-DBMS Configuration:** Showcasing how to connect and configure multiple DBMS within a single Spring Boot application.
+- **Authentication and Authorization:** Implementing secure access controls using Spring Security to manage user authentication and authorization across different services.
+- **Project Structure:** Illustrating an effective folder structure to support these configurations and functionalities.
 
 ## MySQL DDL Script
 ```sql
