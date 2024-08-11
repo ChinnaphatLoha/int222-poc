@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findAllByIsPublicFalse();
+
+    List<Board> findAllByIsPublicTrue();
+
+    List<Board> findAllByOwnerIdAndIsPublicFalse(Integer id);
 }
