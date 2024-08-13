@@ -30,6 +30,7 @@ public class AuthenticationService {
      */
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // 1. Authenticate the user credentials using the AuthenticationManager
+        // If the credentials are invalid, an exception 401 Unauthorized will be thrown
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),  // The username extracted from the request
