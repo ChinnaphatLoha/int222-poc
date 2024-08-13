@@ -53,9 +53,11 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
+                .name(request.getName())
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .role("STUDENT")
                 .build();
         userRepository.save(user);
         return AuthenticationResponse.builder()

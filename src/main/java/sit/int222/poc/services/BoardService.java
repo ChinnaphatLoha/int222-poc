@@ -3,8 +3,6 @@ package sit.int222.poc.services;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import sit.int222.poc.dto.SimpleBoardResponse;
 import sit.int222.poc.project_management.Board;
@@ -39,8 +37,8 @@ public class BoardService {
     public List<SimpleBoardResponse> getAllAccessibleBoards() {
         User user = userService.getCurrentUser();
         List<Board> boards = boardRepository.findAllByIsPublicTrue();
-        List<Board> ownedBoards = boardRepository.findAllByOwnerIdAndIsPublicFalse(user.getId());
-        List<Board> collaboratorBoards = boardCollaboratorRepository.findAllByCollaboratorId(user.getId());
+        List<Board> ownedBoards = boardRepository.findAllByOwnerIdAndIsPublicFalse(user.getOid());
+        List<Board> collaboratorBoards = boardCollaboratorRepository.findAllByCollaboratorId(user.getOid());
         boards.addAll(ownedBoards);
         boards.addAll(collaboratorBoards);
         return listMapper.map(boards, this::mapBoardToSimpleBoardResponse);
@@ -50,7 +48,7 @@ public class BoardService {
         SimpleBoardResponse response = new SimpleBoardResponse();
         modelMapper.map(board, response);
 
-        User owner = userRepository.findById(board.getOwnerId())
+        User owner = userRepository.findByOid(board.getOwnerId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         response.setOwner(owner);
 

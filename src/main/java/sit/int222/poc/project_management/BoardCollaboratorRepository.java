@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface BoardCollaboratorRepository extends JpaRepository<BoardCollaborator, Long> {
-
-    @Query("SELECT bc.board FROM BoardCollaborator bc WHERE bc.collaboratorId = ?1")
-    List<Board> findAllByCollaboratorId(Integer collaboratorId);
+    @Query("SELECT b FROM Board b JOIN BoardCollaborator bc ON b.id = bc.board.id WHERE bc.collaboratorId = ?1")
+    List<Board> findAllByCollaboratorId(String oid);
 }

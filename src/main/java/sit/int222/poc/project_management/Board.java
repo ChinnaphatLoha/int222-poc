@@ -26,8 +26,9 @@ public class Board {
     private String description;
 
     @NotNull
-    @Column(name = "owner_id", nullable = false)
-    private Integer ownerId;
+    @Size(max = 36)
+    @Column(name = "owner_id", nullable = false, length = 36)
+    private String ownerId;
 
     @NotNull
     @Column(name = "is_public", nullable = false)

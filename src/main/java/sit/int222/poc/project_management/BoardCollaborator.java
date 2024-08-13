@@ -2,6 +2,7 @@ package sit.int222.poc.project_management;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +22,9 @@ public class BoardCollaborator {
     private Board board;
 
     @NotNull
+    @Size(max = 36)
     @Column(name = "collaborator_id", nullable = false)
-    private Long collaboratorId;
+    private String collaboratorId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
