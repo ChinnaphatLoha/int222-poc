@@ -8,11 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import sit.int222.poc.user_account.User;
 
 import java.io.IOException;
 
@@ -59,12 +59,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(BEARER_PREFIX.length());
 
         // Extracting the username from the JWT token using the JwtService
-        username = jwtService.extractUsername(jwt);
+        username = jwtService.extractName(jwt);
 
         // If a username is extracted and there is no current authentication context
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // Load user details from the database using the username
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            User userDetails = (User) userDetailsService.loadUserByUsername(username);
 
             // Validate the token with the loaded user details to ensure it's authentic and not expired
             if (jwtService.isTokenValid(jwt, userDetails)) {

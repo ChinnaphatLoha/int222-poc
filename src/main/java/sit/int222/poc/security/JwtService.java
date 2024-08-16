@@ -6,8 +6,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import sit.int222.poc.user_account.User;
 
 import java.security.Key;
 import java.util.Date;
@@ -24,18 +24,21 @@ public class JwtService {
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
 
+    @Value("${public.url}")
+    private String publicUrl;
+
     /**
      * Extracts the username (subject) from the given JWT token.
      *
      * @param token The JWT token from which to extract the username.
      * @return The username contained in the JWT token.
      */
-    public String extractUsername(String token) {
+    public String extractName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     /**
-     * Extracts a specific claim from the JWT token using the provided claims resolver.
+     * Extracts a specific claim from the JWT token using the provided claims' resolver.
      *
      * @param <T> The type of the claim to be returned.
      * @param token The JWT token from which to extract the claim.
@@ -50,37 +53,42 @@ public class JwtService {
     /**
      * Generates a JWT token for the given user without any additional claims.
      *
-     * @param userDetails The user details for which the JWT token will be generated.
+     * @param user The user details for which the JWT token will be generated.
      * @return A JWT token containing the username and expiration information.
      */
-    public String generateToken(UserDetails userDetails) {
-        return generateTokenWithClaims(new HashMap<>(), userDetails);
+    public String generateToken(User user) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("iss", publicUrl);
+        extraClaims.put("name", user.getName());
+        extraClaims.put("email", user.getEmail());
+        extraClaims.put("role", user.getRole());
+        return generateTokenWithClaims(extraClaims, user);
     }
 
     /**
      * Generates a JWT token for the given user, including additional claims.
      *
      * @param extraClaims A map of additional claims to be included in the JWT token.
-     * @param userDetails The user details for which the JWT token will be generated.
+     * @param user The user details for which the JWT token will be generated.
      * @return A JWT token containing the username, expiration information, and any additional claims.
      */
-    public String generateTokenWithClaims(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+    public String generateTokenWithClaims(Map<String, Object> extraClaims, User user) {
+        return buildToken(extraClaims, user, jwtExpiration);
     }
 
     /**
      * Constructs a JWT token with the specified claims, user details, and expiration time.
      *
      * @param extraClaims A map of additional claims to be included in the JWT token.
-     * @param userDetails The user details for which the JWT token will be generated.
+     * @param user The user details for which the JWT token will be generated.
      * @param expiration The expiration time in milliseconds for the JWT token.
      * @return A JWT token containing all specified information.
      */
-    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+    private String buildToken(Map<String, Object> extraClaims, User user, long expiration) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getName())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -92,12 +100,12 @@ public class JwtService {
      * and if the token is not expired.
      *
      * @param token The JWT token to be validated.
-     * @param userDetails The user details against which the token will be validated.
+     * @param user The user details against which the token will be validated.
      * @return True if the token is valid, false otherwise.
      */
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    public boolean isTokenValid(String token, User user) {
+        final String name = extractName(token);
+        return (name.equals(user.getName())) && !isTokenExpired(token);
     }
 
     /**
