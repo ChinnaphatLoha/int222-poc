@@ -72,6 +72,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         // These parameters might be configured in application.properties
-        return new Argon2PasswordEncoder(9, 16, 1, 16, 2);
+        return new Argon2PasswordEncoder(16, 32, 1, 16384, 2);
     }
 }

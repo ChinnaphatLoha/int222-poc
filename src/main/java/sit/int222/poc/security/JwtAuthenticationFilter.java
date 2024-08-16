@@ -9,10 +9,12 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import sit.int222.poc.user_account.User;
+import sit.int222.poc.user_account.UserRepository;
 
 import java.io.IOException;
 
@@ -26,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // Injecting dependencies required for JWT operations and user details retrieval
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     /**
      * This method is invoked once per request to filter and process the incoming HTTP request.
@@ -46,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Extracting the Authorization header from the request
         final String authHeader = request.getHeader(HEADER_NAME);
         final String jwt;
-        final String username;
+        final String name;
 
         // Checking if the Authorization header is missing or doesn't start with "Bearer "
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
@@ -58,11 +61,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Extracting the JWT token from the Authorization header (removing the "Bearer " prefix)
         jwt = authHeader.substring(BEARER_PREFIX.length());
 
-        // Extracting the username from the JWT token using the JwtService
-        username = jwtService.extractName(jwt);
+        // Extracting the name from the JWT token using the JwtService
+        name = jwtService.extractName(jwt);
 
-        // If a username is extracted and there is no current authentication context
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        // If a name is extracted and there is no current authentication context
+        if (name != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            String username = userRepository.findByName(name)
+                    .orElseThrow(
+                            () -> new UsernameNotFoundException("User not found")
+                    )
+                    .getUsername();
+
             // Load user details from the database using the username
             User userDetails = (User) userDetailsService.loadUserByUsername(username);
 

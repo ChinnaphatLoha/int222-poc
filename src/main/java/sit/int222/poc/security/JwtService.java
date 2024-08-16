@@ -28,10 +28,10 @@ public class JwtService {
     private String publicUrl;
 
     /**
-     * Extracts the username (subject) from the given JWT token.
+     * Extracts the name (subject) from the given JWT token.
      *
-     * @param token The JWT token from which to extract the username.
-     * @return The username contained in the JWT token.
+     * @param token The JWT token from which to extract the name.
+     * @return The name contained in the JWT token.
      */
     public String extractName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -40,8 +40,8 @@ public class JwtService {
     /**
      * Extracts a specific claim from the JWT token using the provided claims' resolver.
      *
-     * @param <T> The type of the claim to be returned.
-     * @param token The JWT token from which to extract the claim.
+     * @param <T>            The type of the claim to be returned.
+     * @param token          The JWT token from which to extract the claim.
      * @param claimsResolver A function that specifies how to extract the claim from the token's claims.
      * @return The claim extracted from the JWT token.
      */
@@ -53,8 +53,8 @@ public class JwtService {
     /**
      * Generates a JWT token for the given user without any additional claims.
      *
-     * @param user The user details for which the JWT token will be generated.
-     * @return A JWT token containing the username and expiration information.
+     * @param user The user for which the JWT token will be generated.
+     * @return A JWT token containing the user's name, expiration information, and additional claims.
      */
     public String generateToken(User user) {
         Map<String, Object> extraClaims = new HashMap<>();
@@ -69,8 +69,8 @@ public class JwtService {
      * Generates a JWT token for the given user, including additional claims.
      *
      * @param extraClaims A map of additional claims to be included in the JWT token.
-     * @param user The user details for which the JWT token will be generated.
-     * @return A JWT token containing the username, expiration information, and any additional claims.
+     * @param user        The user for which the JWT token will be generated.
+     * @return A JWT token containing the user's name, expiration information, and any additional claims.
      */
     public String generateTokenWithClaims(Map<String, Object> extraClaims, User user) {
         return buildToken(extraClaims, user, jwtExpiration);
@@ -80,8 +80,8 @@ public class JwtService {
      * Constructs a JWT token with the specified claims, user details, and expiration time.
      *
      * @param extraClaims A map of additional claims to be included in the JWT token.
-     * @param user The user details for which the JWT token will be generated.
-     * @param expiration The expiration time in milliseconds for the JWT token.
+     * @param user        The user details for which the JWT token will be generated.
+     * @param expiration  The expiration time in milliseconds for the JWT token.
      * @return A JWT token containing all specified information.
      */
     private String buildToken(Map<String, Object> extraClaims, User user, long expiration) {
@@ -96,11 +96,11 @@ public class JwtService {
     }
 
     /**
-     * Validates the JWT token by checking if the username matches the one in the UserDetails
+     * Validates the JWT token by checking if the name matches the one in the User object
      * and if the token is not expired.
      *
      * @param token The JWT token to be validated.
-     * @param user The user details against which the token will be validated.
+     * @param user  The user details against which the token will be validated.
      * @return True if the token is valid, false otherwise.
      */
     public boolean isTokenValid(String token, User user) {
