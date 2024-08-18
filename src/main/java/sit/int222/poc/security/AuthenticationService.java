@@ -24,13 +24,14 @@ public class AuthenticationService {
 
     /**
      * Authenticates a user based on the provided authentication request.
+     *
      * @param request The authentication request containing the username and password.
      * @return An AuthenticationResponse containing the generated JWT token for the authenticated user.
      * @throws UsernameNotFoundException If the username provided in the request does not exist in the database.
      */
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // 1. Authenticate the user credentials using the AuthenticationManager
-        // If the credentials are invalid, an exception 401 Unauthorized will be thrown
+        // If the credentials are invalid, an exception 403 Unauthorized will be thrown with AuthenticationException
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),  // The username extracted from the request

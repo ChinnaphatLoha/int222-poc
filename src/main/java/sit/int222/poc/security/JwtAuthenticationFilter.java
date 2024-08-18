@@ -9,7 +9,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -49,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Extracting the Authorization header from the request
         final String authHeader = request.getHeader(HEADER_NAME);
         final String jwt;
-        final String name;
+        final String username;
 
         // Checking if the Authorization header is missing or doesn't start with "Bearer "
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
@@ -62,16 +61,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(BEARER_PREFIX.length());
 
         // Extracting the name from the JWT token using the JwtService
-        name = jwtService.extractName(jwt);
+        username = jwtService.extractUsername(jwt);
 
         // If a name is extracted and there is no current authentication context
-        if (name != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            String username = userRepository.findByName(name)
-                    .orElseThrow(
-                            () -> new UsernameNotFoundException("User not found")
-                    )
-                    .getUsername();
-
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // Load user details from the database using the username
             User userDetails = (User) userDetailsService.loadUserByUsername(username);
 

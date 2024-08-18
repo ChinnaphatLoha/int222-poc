@@ -33,7 +33,7 @@ public class JwtService {
      * @param token The JWT token from which to extract the name.
      * @return The name contained in the JWT token.
      */
-    public String extractName(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -88,7 +88,7 @@ public class JwtService {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(user.getName())
+                .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -104,8 +104,8 @@ public class JwtService {
      * @return True if the token is valid, false otherwise.
      */
     public boolean isTokenValid(String token, User user) {
-        final String name = extractName(token);
-        return (name.equals(user.getName())) && !isTokenExpired(token);
+        final String username = extractUsername(token);
+        return (username.equals(user.getUsername())) && !isTokenExpired(token);
     }
 
     /**
